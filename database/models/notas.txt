@@ -1,0 +1,90 @@
+const express = require('express');
+const router = express.Router();
+
+
+// INDEX /api/posts
+router.get('/', (req, res) => {
+    Post.findAll().then(posts => {
+        res.json(posts);
+    })
+})
+
+// CREATE
+router.post('/', (req, res) => {
+    Post.create({
+        title: req.body.title,
+        body: req.body.body
+    }).then(post => {
+        res.json(post);
+    })
+});
+
+// READ /api/posts/:id
+router.get('/:id', (req, res) => {
+    Post.findByPk(req.params.id).then(post => {
+        res.json(post);
+    })
+});
+
+// UPDATE /api/posts/:id
+router.patch('/:id', (req, res) => {
+    Post.update({
+        title: req.body.title,
+        body: req.body.body
+    }, {
+        where: {
+            id: req.params.id
+        }
+    }).then(result => {
+        res.json(result);
+    });
+});
+
+// DELETE /api/posts/:id
+router.delete('/:id', (req, res) => {
+    Post.destroy({
+        where: {
+            id: req.params.id
+        }
+    }).then(result => {
+        res.json(result);
+    })
+});
+
+module.exports = router;
+
+---------------------------------------------------------------------------------------------------------
+PRODUCTOS.JSON 
+const sequelize = require('../db');
+
+'use strict';
+const { Model, DataTypes } = require('sequelize');
+class Producto extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+        // define association here
+    }
+}
+Producto.init({
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true // Automatically gets converted to SERIAL for postgres
+    },
+    articulo: DataTypes.STRING,
+    descripcion: DataTypes.STRING,
+    cantidad: DataTypes.INTEGER,
+    precio: DataTypes.DECIMAL,
+    estado: DataTypes.BOOLEAN,
+    fecha: DataTypes.DATE
+}, {
+    sequelize,
+    timestamps: false,
+    tableName: 'productos',
+    modelName: 'Producto',
+});
+module.exports = Producto
